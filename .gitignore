@@ -19,3 +19,5 @@ state*.json
 *.key
 # Original local task notes may contain personal examples.
 prompt_ntfy_monitor.txt
+
+.local-state/

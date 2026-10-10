@@ -1,0 +1,42 @@
+[Unit]
+Description=Raspberry Pi system and security monitor with ntfy notifications
+Documentation=https://docs.ntfy.sh/
+Wants=network-online.target
+After=network-online.target systemd-journald.service
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=pi-monitor
+Group=pi-monitor
+SupplementaryGroups=systemd-journal video
+EnvironmentFile=/etc/pi-monitor/pi-monitor.env
+Environment=PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
+WorkingDirectory=/opt/pi-monitor
+ExecStart=/opt/pi-monitor/.venv/bin/python -m pi_monitor --foreground
+Restart=on-failure
+RestartSec=15s
+TimeoutStopSec=45s
+StateDirectory=pi-monitor
+StateDirectoryMode=0700
+UMask=0077
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=pi-monitor
+NoNewPrivileges=yes
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+LockPersonality=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+# Keep the host mount view: ProtectSystem would cause false read-only alerts.
+# Keep /dev/vcio or /dev/vchiq visible for vcgencmd; access uses the video group.
+
+[Install]
+WantedBy=multi-user.target
