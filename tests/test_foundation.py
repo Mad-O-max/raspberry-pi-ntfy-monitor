@@ -14,11 +14,20 @@ def test_config_and_redaction():
     assert "synthetic-token" not in json.dumps(c.redacted())
 
 
-@pytest.mark.parametrize("setting,value", [
-    ("HTTP_TIMEOUT", "nan"), ("DISK_CLEAR", "5"), ("NTFY_URL", "http://example.org"),
-    ("NETWORK_FAILURES", "0"), ("PUBLIC_IP_ENABLED", "perhaps"), ("NTFY_TOPIC", ""),
-    ("NTFY_TOKEN", "bad\nheader"), ("LOAD_CLEAR", "2"), ("UNKNOWN", "x"),
-])
+@pytest.mark.parametrize(
+    "setting,value",
+    [
+        ("HTTP_TIMEOUT", "nan"),
+        ("DISK_CLEAR", "5"),
+        ("NTFY_URL", "http://example.org"),
+        ("NETWORK_FAILURES", "0"),
+        ("PUBLIC_IP_ENABLED", "perhaps"),
+        ("NTFY_TOPIC", ""),
+        ("NTFY_TOKEN", "bad\nheader"),
+        ("LOAD_CLEAR", "2"),
+        ("UNKNOWN", "x"),
+    ],
+)
 def test_bad_config(setting, value):
     with pytest.raises(ValueError):
         Config.from_env({"PI_NTFY_TOPIC": "test-topic", "PI_" + setting: value})

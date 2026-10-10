@@ -12,8 +12,12 @@ def https_url(value: str) -> bool:
     try:
         url = urlsplit(value)
         return bool(
-            url.scheme == "https" and url.hostname and not url.username
-            and not url.password and not url.query and not url.fragment
+            url.scheme == "https"
+            and url.hostname
+            and not url.username
+            and not url.password
+            and not url.query
+            and not url.fragment
             and not any(c.isspace() for c in value)
         )
     except ValueError:
@@ -97,7 +101,9 @@ class Config:
 
     def validate(self) -> None:
         if not https_url(self.ntfy_url) or not https_url(self.public_ip_url):
-            raise ValueError("PI_NTFY_URL and PI_PUBLIC_IP_URL must be HTTPS URLs without credentials")
+            raise ValueError(
+                "PI_NTFY_URL and PI_PUBLIC_IP_URL must be HTTPS URLs without credentials"
+            )
         if not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", self.ntfy_topic):
             raise ValueError("PI_NTFY_TOPIC must be a nonempty topic (letters, digits, _ or -)")
         if self.ntfy_topic.lower().startswith(("replace", "change", "your_")):
@@ -116,8 +122,10 @@ class Config:
             raise ValueError("Temperature clear threshold must be below alert threshold")
         if self.load_clear >= self.load_alert:
             raise ValueError("Load clear threshold must be below alert threshold")
-        for low, high in ((self.disk_alert, self.disk_clear),
-                          (self.memory_alert_percent, self.memory_clear_percent)):
+        for low, high in (
+            (self.disk_alert, self.disk_clear),
+            (self.memory_alert_percent, self.memory_clear_percent),
+        ):
             if not 0 < low < high < 100:
                 raise ValueError("Percentage thresholds require 0 < alert < clear < 100")
         if self.memory_alert_mib >= self.memory_clear_mib:
@@ -126,12 +134,12 @@ class Config:
             raise ValueError("State and temperature paths must be absolute")
         if not self.disk_paths or any(not Path(p).is_absolute() for p in self.disk_paths):
             raise ValueError("PI_DISK_PATHS must contain absolute paths")
-        if any(not re.fullmatch(r"[A-Za-z0-9_.@:-]+\.service", s)
-               for s in self.critical_services):
+        if any(not re.fullmatch(r"[A-Za-z0-9_.@:-]+\.service", s) for s in self.critical_services):
             raise ValueError("Invalid critical service name")
         if not self.connectivity_targets:
             raise ValueError("At least one connectivity target is required")
         import ipaddress
+
         for target in self.connectivity_targets:
             try:
                 host, port = target.rsplit(":", 1)

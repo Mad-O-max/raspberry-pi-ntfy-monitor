@@ -46,18 +46,23 @@ class Notifier:
         self.next_send = 0.0
 
     def request(self, note: Notification) -> Request:
-        body = json.dumps({
-            "topic": self.config.ntfy_topic,
-            "title": note.title[:200], "message": note.message[:3000],
-            "priority": PRIORITIES[note.priority], "tags": list(note.tags),
-        }).encode()
+        body = json.dumps(
+            {
+                "topic": self.config.ntfy_topic,
+                "title": note.title[:200],
+                "message": note.message[:3000],
+                "priority": PRIORITIES[note.priority],
+                "tags": list(note.tags),
+            }
+        ).encode()
         headers = {"Content-Type": "application/json"}
         if self.config.ntfy_token:
             headers["Authorization"] = "Bearer " + self.config.ntfy_token
         return Request(self.config.ntfy_url.rstrip("/") + "/", body, headers, method="POST")
 
-    def notify(self, title: str, message: str, priority: str = "default",
-               tags: list[str] | None = None) -> bool:
+    def notify(
+        self, title: str, message: str, priority: str = "default", tags: list[str] | None = None
+    ) -> bool:
         if priority not in PRIORITIES:
             raise ValueError("Unknown notification priority")
         title, message = title[:200], message[:3000]
@@ -101,7 +106,7 @@ class Notifier:
                 # Exceptions can contain URLs/credentials: deliberately omit their text.
                 LOG.warning("ntfy delivery failed (transport error)")
             if attempt + 1 < self.config.retries and self.stop_event.wait(
-                min(30.0, self.config.retry_backoff * 2 ** attempt)
+                min(30.0, self.config.retry_backoff * 2**attempt)
             ):
                 return False
         return False

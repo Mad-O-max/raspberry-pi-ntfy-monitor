@@ -56,8 +56,12 @@ class StateStore:
             if len(raw) > MAX_BYTES:
                 raise ValueError("oversized state")
             value = json.loads(raw)
-            if (not isinstance(value, dict) or value.get("version") != 1
-                    or not isinstance(value.get("data"), dict) or not valid_tree(value)):
+            if (
+                not isinstance(value, dict)
+                or value.get("version") != 1
+                or not isinstance(value.get("data"), dict)
+                or not valid_tree(value)
+            ):
                 raise ValueError("invalid state structure")
             return value["data"]
         except FileNotFoundError:
