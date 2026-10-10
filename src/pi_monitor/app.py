@@ -110,7 +110,12 @@ class App:
                 PollJob("memory", MemoryMonitor(*common), c.poll_interval),
                 PollJob("load", LoadMonitor(*common), c.poll_interval),
                 PollJob("network", NetworkMonitor(*common), c.network_interval),
-                PollJob("services", ServicesMonitor(*common), c.service_interval),
+                PollJob(
+                    "services",
+                    ServicesMonitor(*common),
+                    c.service_interval,
+                    next_due=time.monotonic() + c.service_interval,
+                ),
                 PollJob("throttling", ThrottlingMonitor(*common), c.poll_interval),
                 PollJob("filesystem", FilesystemMonitor(*common), c.poll_interval),
             ]

@@ -76,7 +76,9 @@ def previous_boot_messages() -> list[str]:
             try:
                 entry = json.loads(line)
                 if isinstance(entry.get("MESSAGE"), str):
-                    messages.append(entry["MESSAGE"][:4096])
+                    identifier = entry.get("SYSLOG_IDENTIFIER", "")
+                    prefix = identifier + ": " if isinstance(identifier, str) else ""
+                    messages.append(prefix + entry["MESSAGE"][:4096])
             except (ValueError, AttributeError):
                 continue
         return messages

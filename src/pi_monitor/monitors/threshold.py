@@ -37,6 +37,9 @@ class Threshold:
         )
         self.alert, self.clear = alert, clear
         self.low, self.sustain, self.inclusive = low, sustain, inclusive
+        if sustain and not self.data["active"]:
+            # A monitoring gap cannot establish continuously high load.
+            self.data["pending"] = 0.0
 
     def sample(self, value: float, now: float) -> Transition | None:
         if self.low:

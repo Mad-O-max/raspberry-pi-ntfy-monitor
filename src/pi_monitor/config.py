@@ -11,6 +11,8 @@ from urllib.parse import urlsplit
 def https_url(value: str) -> bool:
     try:
         url = urlsplit(value)
+        if url.port is not None and not 1 <= url.port <= 65535:
+            return False
         return bool(
             url.scheme == "https"
             and url.hostname

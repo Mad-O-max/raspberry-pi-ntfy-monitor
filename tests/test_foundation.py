@@ -65,3 +65,8 @@ def test_ntfy_request_and_queue():
     assert notifier.dropped == 1
     clock[0] += 61
     assert notifier.notify("same", "message")
+
+
+def test_invalid_url_port():
+    with pytest.raises(ValueError):
+        Config.from_env({"PI_NTFY_TOPIC": "test", "PI_NTFY_URL": "https://example.org:bad"})

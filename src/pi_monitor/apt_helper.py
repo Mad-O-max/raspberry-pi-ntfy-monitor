@@ -11,6 +11,7 @@ from pathlib import Path
 def main() -> int:
     try:
         import apt
+        import apt_pkg
 
         lists = Path("/var/lib/apt/lists")
         if not any(lists.glob("*InRelease")) and not any(lists.glob("*Release")):
@@ -22,8 +23,6 @@ def main() -> int:
                 continue
             # Security fixes may be included in a newer candidate from -updates.
             # Inspect every available version newer than installed up to candidate.
-            import apt_pkg
-
             secure = any(
                 apt_pkg.version_compare(version.version, package.installed.version) > 0
                 and apt_pkg.version_compare(version.version, package.candidate.version) <= 0

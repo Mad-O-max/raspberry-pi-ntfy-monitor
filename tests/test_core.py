@@ -102,3 +102,15 @@ def test_boot_vs_application_restart():
         "Pi monitor restarted",
         "Raspberry Pi started",
     ]
+
+
+def test_load_pending_does_not_survive_unobserved_gap():
+    calls, notify = collector()
+    config = replace(Config(), load_sustain=10)
+    state = {}
+    LoadMonitor(config, state, notify).sample(8, 4, 100)
+    monitor = LoadMonitor(config, state, notify)
+    monitor.sample(8, 4, 120)
+    assert not calls
+    monitor.sample(8, 4, 130)
+    assert len(calls) == 1

@@ -7,6 +7,7 @@ import threading
 import time
 from collections import OrderedDict, deque
 from dataclasses import dataclass
+from http.client import HTTPException
 from urllib.error import HTTPError, URLError
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
@@ -102,7 +103,7 @@ class Notifier:
                 exc.close()
                 if not retry:
                     return False
-            except (OSError, URLError, ValueError):
+            except (OSError, URLError, ValueError, HTTPException):
                 # Exceptions can contain URLs/credentials: deliberately omit their text.
                 LOG.warning("ntfy delivery failed (transport error)")
             if attempt + 1 < self.config.retries and self.stop_event.wait(

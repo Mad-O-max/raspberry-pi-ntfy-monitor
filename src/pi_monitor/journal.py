@@ -124,6 +124,10 @@ class JournalRouter:
         message = entry.get("MESSAGE", "")
         identifier = entry.get("SYSLOG_IDENTIFIER", "")
         unit = entry.get("_SYSTEMD_UNIT", "")
+        if not isinstance(identifier, str):
+            identifier = ""
+        if not isinstance(unit, str):
+            unit = ""
         try:
             timestamp = datetime.fromtimestamp(int(entry["__REALTIME_TIMESTAMP"]) / 1e6, UTC)
         except (KeyError, ValueError, TypeError, OverflowError, OSError):
