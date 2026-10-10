@@ -112,6 +112,28 @@ For an upgrade: stop the service, update the root-owned source copy, reinstall
 `/opt/pi-monitor` with its venv's pip, rerun configuration validation, and restart.
 Keep the state directory; do not replace a live environment in place.
 
+## Installation using the local installer
+
+Alternatively, build a wheel as your normal development user, then run the local
+installer. It uses the OS Python (3.11+) for `/opt/pi-monitor/.venv`; your shared
+uv development environment is not used or changed by the installer.
+
+```bash
+uv build --wheel
+sudo bash scripts/install.sh
+sudoedit /etc/pi-monitor/pi-monitor.env
+sudo bash scripts/install.sh --activate
+```
+
+The installer requires existing `systemd-journal` and `video` groups, Python venv
+support and exactly one project wheel in `dist/`. It installs that wheel offline,
+creates the dedicated account and directories, preserves existing configuration,
+and installs/verifies the systemd unit. A running service must first be stopped
+before reinstalling. The separate `--activate` step validates the root-only
+environment file before enabling and starting the service. Fill in your own topic
+first; the placeholder is deliberately rejected. Run sudo in your own terminal;
+never send a sudo password or ntfy token through chat.
+
 ## Configuration and CLI
 
 All settings use `PI_*` environment variables. The application does **not** source

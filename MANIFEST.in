@@ -3,3 +3,4 @@ recursive-include config *.example
 recursive-include docs *.md
 recursive-include systemd *.service
 recursive-include tests *.py
+recursive-include scripts *.sh
