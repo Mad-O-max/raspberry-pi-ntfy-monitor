@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.py[cod]
+.env
+*.env
+!*.env.example
+.coverage*
+htmlcov/
+coverage.xml
+build/
+dist/
+*.egg-info/
+.vscode/*.log
+.vscode/.ropeproject/
+state*.json
+*.pem
+*.key
+# Original local task notes may contain personal examples.
+prompt_ntfy_monitor.txt
